@@ -11,19 +11,19 @@
 					<key>kind</key>
 					<string>software-package</string>
 					<key>url</key>
-					<string>https://github.com/kamrulgposs/gpsync/releases/download/1.0.0/gpsync.ipa</string>
+					<string>https://kamrulgposs.github.io/gpsync-production-ios/gpsync.ipa</string>
 				</dict>
 				<dict>
 					<key>kind</key>
 					<string>display-image</string>
 					<key>url</key>
-					<string>@file:1024.png</string>
+					<string>https://kamrulgposs.github.io/gpsync-production-ios/1024.png</string>
 				</dict>
 				<dict>
 					<key>kind</key>
 					<string>full-size-image</string>
 					<key>url</key>
-					<string>@file:1024.png</string>
+					<string>https://kamrulgposs.github.io/gpsync-production-ios/1024.png</string>
 				</dict>
 			</array>
 			<key>metadata</key>

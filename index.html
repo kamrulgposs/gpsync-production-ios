@@ -100,38 +100,6 @@
             box-shadow: 0 15px 35px rgba(102, 126, 234, 0.6);
         }
 
-        .install-btn[disabled] {
-            opacity: 0.75;
-            cursor: not-allowed;
-        }
-
-        .progress-wrap {
-            display: none;
-            margin-top: 16px;
-            text-align: left;
-        }
-
-        .progress-text {
-            font-size: 12px;
-            color: #444;
-            margin-bottom: 8px;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 10px;
-            background: #e8ebff;
-            border-radius: 999px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            width: 0%;
-            height: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            transition: width 0.15s linear;
-        }
-        
         .footer {
             margin-top: 30px;
             font-size: 12px;
@@ -171,16 +139,12 @@
             </div>
         </div>
         
-        <button id="installBtn" class="install-btn" type="button">📥 Download IPA</button>
-        <div id="progressWrap" class="progress-wrap" aria-live="polite">
-            <div id="progressText" class="progress-text">Starting download...</div>
-            <div class="progress-bar">
-                <div id="progressFill" class="progress-fill"></div>
-            </div>
-        </div>
+        <a href="itms-services://?action=download-manifest&amp;url=https://kamrulgposs.github.io/gpsync-production-ios/manifest.plist" class="install-btn">
+            📥 Install App
+        </a>
         
         <div class="warning">
-            ⚠️ Open this page in <strong>Safari</strong> on your iPhone to download the app package. This enterprise build requires iOS 13.0 or later.
+            ⚠️ Open this page in <strong>Safari</strong> on your iPhone to install the app. This enterprise build requires iOS 13.0 or later.
         </div>
         
         <div class="footer">
@@ -188,77 +152,5 @@
         </div>
     </div>
 
-    <script>
-        const installBtn = document.getElementById('installBtn');
-        const progressWrap = document.getElementById('progressWrap');
-        const progressText = document.getElementById('progressText');
-        const progressFill = document.getElementById('progressFill');
-
-        function updateProgress(percent, text) {
-            progressFill.style.width = Math.max(0, Math.min(100, percent)) + '%';
-            progressText.textContent = text;
-        }
-
-        installBtn.addEventListener('click', async () => {
-            const localIpaPath = 'gpsync.ipa';
-
-            installBtn.disabled = true;
-            progressWrap.style.display = 'block';
-            updateProgress(0, 'Starting download...');
-
-            try {
-                const response = await fetch(localIpaPath);
-                if (!response.ok) {
-                    throw new Error('Download failed with status ' + response.status);
-                }
-
-                const totalBytes = Number(response.headers.get('Content-Length')) || 0;
-                const reader = response.body && response.body.getReader ? response.body.getReader() : null;
-
-                if (!reader) {
-                    window.location.href = localIpaPath;
-                    updateProgress(100, 'Download started');
-                    return;
-                }
-
-                const chunks = [];
-                let receivedBytes = 0;
-
-                while (true) {
-                    const result = await reader.read();
-                    if (result.done) {
-                        break;
-                    }
-
-                    chunks.push(result.value);
-                    receivedBytes += result.value.length;
-
-                    if (totalBytes > 0) {
-                        const percent = (receivedBytes / totalBytes) * 100;
-                        updateProgress(percent, 'Downloading... ' + Math.round(percent) + '%');
-                    } else {
-                        const downloadedMb = (receivedBytes / (1024 * 1024)).toFixed(2);
-                        updateProgress(100, 'Downloading... ' + downloadedMb + ' MB');
-                    }
-                }
-
-                const blob = new Blob(chunks, { type: 'application/octet-stream' });
-                const downloadUrl = URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.href = downloadUrl;
-                link.download = 'gpsync.ipa';
-                document.body.appendChild(link);
-                link.click();
-                link.remove();
-                URL.revokeObjectURL(downloadUrl);
-
-                updateProgress(100, 'Download complete (100%)');
-            } catch (error) {
-                updateProgress(0, 'Download failed. Please try again.');
-            } finally {
-                installBtn.disabled = false;
-            }
-        });
-    </script>
 </body>
 </html>
